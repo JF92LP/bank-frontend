@@ -1,0 +1,163 @@
+<h1>Clientes</h1>
+
+<!-- FORMULARIO -->
+<div class="card">
+  <h2>{{ editandoClienteId === null ? 'Nuevo Cliente' : 'Editar Cliente' }}</h2>
+
+  <div class="error" *ngIf="errorMsg">{{ errorMsg }}</div>
+
+  <form [formGroup]="form" (ngSubmit)="guardar()">
+    <div class="grid">
+      <div class="field">
+        <label>Nombre</label>
+        <input type="text" formControlName="nombre" />
+        <small class="val" *ngIf="form.get('nombre')?.touched && form.get('nombre')?.invalid">
+          Nombre es obligatorio (mín. 3 caracteres)
+        </small>
+      </div>
+
+      <div class="field">
+        <label>Género</label>
+        <input type="text" formControlName="genero" placeholder="M / F / Otro" />
+        <small class="val" *ngIf="form.get('genero')?.touched && form.get('genero')?.invalid">
+          Género es obligatorio
+        </small>
+      </div>
+
+      <div class="field">
+        <label>Edad</label>
+        <input type="number" formControlName="edad" />
+        <small class="val" *ngIf="form.get('edad')?.touched && form.get('edad')?.invalid">
+          Edad válida es obligatoria
+        </small>
+      </div>
+
+      <div class="field">
+        <label>Identificación</label>
+        <input type="text" formControlName="identificacion" />
+        <small class="val" *ngIf="form.get('identificacion')?.touched && form.get('identificacion')?.invalid">
+          Identificación es obligatoria
+        </small>
+      </div>
+
+      <div class="field">
+        <label>Dirección</label>
+        <input type="text" formControlName="direccion" />
+        <small class="val" *ngIf="form.get('direccion')?.touched && form.get('direccion')?.invalid">
+          Dirección es obligatoria
+        </small>
+      </div>
+
+      <div class="field">
+        <label>Teléfono</label>
+        <input type="text" formControlName="telefono" />
+        <small class="val" *ngIf="form.get('telefono')?.touched && form.get('telefono')?.invalid">
+          Teléfono es obligatorio
+        </small>
+      </div>
+
+      <!-- CONTRASEÑA (refactor para create vs edit) -->
+      <div class="field">
+        <label>
+          Contraseña
+          <span class="hint" *ngIf="editandoClienteId !== null">
+            (opcional: solo si deseas cambiarla)
+          </span>
+        </label>
+
+        <input
+          type="password"
+          formControlName="contrasena"
+          [placeholder]="editandoClienteId === null ? 'Obligatoria al crear' : 'Dejar vacío para no cambiar'"
+        />
+
+        <!-- Validación solo se muestra si el control está inválido y fue tocado -->
+        <small class="val" *ngIf="form.get('contrasena')?.touched && form.get('contrasena')?.invalid">
+          {{ editandoClienteId === null
+            ? 'Contraseña es obligatoria (mín. 4)'
+            : 'Si ingresas una contraseña, debe tener mínimo 4 caracteres'
+          }}
+        </small>
+
+        <!-- Mensaje informativo cuando estás editando -->
+        <small class="info" *ngIf="editandoClienteId !== null">
+          Consejo: Si no quieres modificar la contraseña, déjala vacía.
+        </small>
+      </div>
+
+      <div class="field">
+        <label>Estado</label>
+        <select formControlName="estado">
+          <option [ngValue]="true">Activo</option>
+          <option [ngValue]="false">Inactivo</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button type="submit">
+        {{ editandoClienteId === null ? 'Crear' : 'Guardar cambios' }}
+      </button>
+
+      <button type="button" class="secondary" (click)="iniciarNuevo()">
+        Limpiar
+      </button>
+    </div>
+  </form>
+</div>
+
+<!-- LISTADO -->
+<div class="card">
+  <div class="row">
+    <h2>Listado</h2>
+
+    <!-- Importante: ngModel requiere FormsModule (ya lo tienes importado en el componente) -->
+    <input
+      class="search"
+      type="text"
+      [(ngModel)]="searchText"
+      (input)="aplicarFiltro()"
+      placeholder="Buscar por nombre, identificación o teléfono"
+    />
+  </div>
+
+  <!-- Cargando / vacío / tabla -->
+  <div *ngIf="cargando">Cargando...</div>
+
+  <div *ngIf="!cargando && clientesFiltrados.length === 0" class="empty">
+    No hay clientes para mostrar.
+  </div>
+
+  <table class="table" *ngIf="!cargando && clientesFiltrados.length > 0">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Nombre</th>
+        <th>Identificación</th>
+        <th>Teléfono</th>
+        <th>Estado</th>
+        <th style="width: 180px;">Acciones</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let c of clientesFiltrados">
+        <td>{{ c.clienteId }}</td>
+        <td>{{ c.nombre }}</td>
+        <td>{{ c.identificacion }}</td>
+        <td>{{ c.telefono }}</td>
+        <td>{{ c.estado ? 'Activo' : 'Inactivo' }}</td>
+
+        <td class="actions-td">
+          <button type="button" class="secondary" (click)="editar(c)">
+            Editar
+          </button>
+
+          <button type="button" class="danger" (click)="eliminar(c)">
+            Eliminar
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

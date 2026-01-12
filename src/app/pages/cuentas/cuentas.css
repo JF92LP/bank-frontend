@@ -1,0 +1,83 @@
+.card {
+  background: #fff;
+  padding: 16px;
+  border-radius: 12px;
+  margin-bottom: 16px;
+  border: 1px solid #e5e7eb;
+}
+
+.row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.row.space {
+  justify-content: space-between;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-top: 10px;
+}
+
+label {
+  display: block;
+  font-size: 12px;
+  margin-bottom: 6px;
+  color: #374151;
+}
+
+input, select {
+  width: 100%;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid #d1d5db;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+button {
+  padding: 10px 14px;
+  border: none;
+  border-radius: 10px;
+  background: #111827;
+  color: #fff;
+  cursor: pointer;
+}
+
+button.secondary {
+  background: #6b7280;
+}
+
+button.danger {
+  background: #b91c1c;
+}
+
+.search {
+  max-width: 280px;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.table th, .table td {
+  border-bottom: 1px solid #e5e7eb;
+  padding: 10px;
+  text-align: left;
+  font-size: 14px;
+}
+
+.error {
+  margin-top: 10px;
+  color: #b91c1c;
+}

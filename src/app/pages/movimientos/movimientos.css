@@ -1,0 +1,71 @@
+.card {
+  background: #fff;
+  padding: 16px;
+  border-radius: 12px;
+  margin-bottom: 16px;
+  border: 1px solid #e5e7eb;
+}
+
+.row {
+  display: flex;
+  gap: 10px;
+  align-items: end;
+}
+
+.row.space {
+  justify-content: space-between;
+  align-items: center;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-top: 10px;
+}
+
+label {
+  display: block;
+  font-size: 12px;
+  margin-bottom: 6px;
+  color: #374151;
+}
+
+input, select {
+  width: 100%;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid #d1d5db;
+}
+
+.actions {
+  margin-top: 12px;
+}
+
+button {
+  padding: 10px 14px;
+  border: none;
+  border-radius: 10px;
+  background: #111827;
+  color: #fff;
+  cursor: pointer;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.table th, .table td {
+  border-bottom: 1px solid #e5e7eb;
+  padding: 10px;
+  text-align: left;
+  font-size: 14px;
+}
+
+.error { margin-top: 10px; color: #b91c1c; }
+.ok { margin-top: 10px; color: #065f46; }
+.muted { color: #6b7280; font-size: 12px; }
+.empty { color: #6b7280; margin-top: 10px; }
+.val { color: #b91c1c; font-size: 12px; }

@@ -1,0 +1,219 @@
+<div class="container">
+  <h2>Reportes</h2>
+
+  <!-- Selector de modo -->
+  <div class="card" style="margin-bottom: 16px;">
+    <div style="display:flex; gap: 16px; align-items:center;">
+      <label style="margin: 0;">
+        <input
+          type="radio"
+          name="modo"
+          [(ngModel)]="modoBusqueda"
+          value="cuenta"
+          (change)="onCambiarModo()"
+        />
+        Por número de cuenta
+      </label>
+
+      <label style="margin: 0;">
+        <input
+          type="radio"
+          name="modo"
+          [(ngModel)]="modoBusqueda"
+          value="cliente"
+          (change)="onCambiarModo()"
+        />
+        Por titular (cliente)
+      </label>
+    </div>
+  </div>
+
+  <!-- =========================
+       MODO 1: POR CUENTA
+       ========================= -->
+  <div *ngIf="modoBusqueda === 'cuenta'" class="card">
+    <h3>Reporte - Estado de Cuenta (por número)</h3>
+
+    <div class="form">
+      <div class="field">
+        <label>Número de cuenta</label>
+        <input [(ngModel)]="numeroCuenta" type="text" />
+      </div>
+
+      <div class="field">
+        <label>Fecha inicio</label>
+        <input [(ngModel)]="fechaInicio" type="date" />
+      </div>
+
+      <div class="field">
+        <label>Fecha fin</label>
+        <input [(ngModel)]="fechaFin" type="date" />
+      </div>
+
+      <button type="button" (click)="consultar()" [disabled]="cargando">
+        Consultar
+      </button>
+
+      <button
+        type="button"
+        class="secondary"
+        style="margin-left: 10px;"
+        *ngIf="puedeDescargar"
+        (click)="descargarPdf()"
+        [disabled]="cargando"
+      >
+        Descargar PDF
+      </button>
+    </div>
+
+    <div *ngIf="cargando" class="loading">Cargando...</div>
+    <div *ngIf="errorMsg" class="error">{{ errorMsg }}</div>
+
+    <div *ngIf="reporte" class="card" style="margin-top: 12px;">
+      <p><b>Cliente:</b> {{ reporte.cliente }}</p>
+      <p><b>Número de cuenta:</b> {{ reporte.numeroCuenta }}</p>
+      <p><b>Saldo actual:</b> {{ reporte.saldoActual | number:'1.2-2' }}</p>
+
+      <h3>Movimientos</h3>
+
+      <div *ngIf="reporte.movimientos.length === 0" class="empty">
+        No hay movimientos para mostrar.
+      </div>
+
+      <table *ngIf="reporte.movimientos.length > 0" class="table">
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Tipo</th>
+            <th>Valor</th>
+            <th>Saldo</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let m of reporte.movimientos">
+            <td>{{ m.fecha }}</td>
+            <td>{{ m.tipoMovimiento }}</td>
+            <td>{{ m.valor | number:'1.2-2' }}</td>
+            <td>{{ m.saldo | number:'1.2-2' }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- =========================
+       MODO 2: POR CLIENTE (LIMPIO)
+       ========================= -->
+  <div *ngIf="modoBusqueda === 'cliente'" class="card">
+    <h3>Movimientos por Cliente (por titular)</h3>
+
+    <!-- Solo select de clientes (sin buscar por texto) -->
+    <div class="field" style="margin-bottom: 10px;">
+      <label>Selecciona un cliente</label>
+      <select [(ngModel)]="clienteIdSeleccionado">
+        <option [ngValue]="null">Seleccione...</option>
+        <option *ngFor="let c of clientes" [ngValue]="c.clienteId">
+          {{ c.nombre }} - {{ c.identificacion }}
+        </option>
+      </select>
+    </div>
+
+    <div class="form" style="margin-top: 10px;">
+      <div class="field">
+        <label>Fecha inicio</label>
+        <input [(ngModel)]="fechaInicioCliente" type="date" />
+      </div>
+
+      <div class="field">
+        <label>Fecha fin</label>
+        <input [(ngModel)]="fechaFinCliente" type="date" />
+      </div>
+
+      <button
+        type="button"
+        class="secondary"
+        (click)="cargarDataCliente()"
+        [disabled]="cargando || !clienteIdSeleccionado"
+      >
+        Cargar cuentas del cliente
+      </button>
+
+      <button
+        type="button"
+        style="margin-left: 10px;"
+        *ngIf="puedeDescargarCliente"
+        (click)="descargarPdfCliente()"
+        [disabled]="cargando"
+      >
+        Descargar PDF (cliente)
+      </button>
+    </div>
+
+    <div *ngIf="cargando" class="loading">Cargando...</div>
+    <div *ngIf="errorMsgCliente" class="error">{{ errorMsgCliente }}</div>
+
+    <div class="card" style="margin-top: 12px;">
+      <h3>Cuentas asociadas</h3>
+
+      <div *ngIf="cuentasCliente.length === 0" class="empty">
+        Este cliente no tiene cuentas asociadas.
+      </div>
+
+      <table *ngIf="cuentasCliente.length > 0" class="table">
+        <thead>
+          <tr>
+            <th>Número</th>
+            <th>Tipo</th>
+            <th>Saldo Inicial</th>
+            <th>Saldo Actual</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let cta of cuentasCliente">
+            <td>{{ cta.numeroCuenta }}</td>
+            <td>{{ cta.tipoCuenta }}</td>
+            <td>{{ (cta.saldoInicial ?? 0) | number:'1.2-2' }}</td>
+            <td>{{ (cta.saldoActual ?? 0) | number:'1.2-2' }}</td>
+            <td>{{ cta.estado ? 'Activa' : 'Inactiva' }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Movimientos por cliente -->
+    <div class="card" style="margin-top: 12px;">
+      <h3>Movimientos (rango por cliente)</h3>
+
+      <div *ngIf="movimientosCliente.length === 0" class="empty">
+        No hay movimientos para mostrar en el rango seleccionado.
+      </div>
+
+      <table *ngIf="movimientosCliente.length > 0" class="table">
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Cliente</th>
+            <th>Número Cuenta</th>
+            <th>Tipo Cuenta</th>
+            <th>Saldo Inicial</th>
+            <th>Movimiento</th>
+            <th>Saldo Disponible</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let m of movimientosCliente">
+            <td>{{ m.fecha }}</td>
+            <td>{{ m.cliente }}</td>
+            <td>{{ m.numeroCuenta }}</td>
+            <td>{{ m.tipo }}</td>
+            <td>{{ m.saldoInicial | number:'1.2-2' }}</td>
+            <td>{{ m.movimiento | number:'1.2-2' }}</td>
+            <td>{{ m.saldoDisponible | number:'1.2-2' }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

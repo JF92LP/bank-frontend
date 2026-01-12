@@ -1,0 +1,53 @@
+.app {
+  display: flex;
+  height: 100vh;
+  font-family: Arial, sans-serif;
+}
+
+.sidebar {
+  width: 240px;
+  background: #111827;
+  color: #fff;
+  padding: 16px;
+}
+
+.brand {
+  margin: 0 0 16px;
+  font-size: 18px;
+}
+
+.menu {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.menu a {
+  color: #cbd5e1;
+  text-decoration: none;
+  padding: 10px;
+  border-radius: 8px;
+}
+
+.menu a.active {
+  background: #1f2937;
+  color: #fff;
+}
+
+.content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: #f3f4f6;
+}
+
+.topbar {
+  background: #fff;
+  border-bottom: 1px solid #e5e7eb;
+  padding: 14px 18px;
+}
+
+.page {
+  padding: 18px;
+  overflow: auto;
+}

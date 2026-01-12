@@ -1,0 +1,121 @@
+<h2>Cuentas</h2>
+
+<div class="card">
+  <div class="row space">
+    <div style="flex: 1;">
+      <label>Buscar cliente (nombre o identificación)</label>
+      <input
+        type="text"
+        [(ngModel)]="searchCliente"
+        (input)="filtrarClientes()"
+        placeholder="Ej: Juan Pérez o 1717..."
+      />
+    </div>
+
+    <div style="flex: 1;">
+      <label>Seleccionar cliente</label>
+      <select (change)="seleccionarClientePorId($any($event.target).value)">
+        <option value="">Seleccione...</option>
+        <option *ngFor="let c of clientesFiltrados" [value]="c.clienteId">
+          {{ c.nombre }} — {{ c.identificacion }}
+        </option>
+      </select>
+    </div>
+  </div>
+
+  <div *ngIf="clienteSeleccionado" style="margin-top: 10px;">
+    <strong>Cliente:</strong> {{ clienteSeleccionado.nombre }}
+    | <strong>ID:</strong> {{ clienteSeleccionado.clienteId }}
+    | <strong>Identificación:</strong> {{ clienteSeleccionado.identificacion }}
+    | <strong>Teléfono:</strong> {{ clienteSeleccionado.telefono }}
+  </div>
+
+  <p class="error" *ngIf="errorMsg">{{ errorMsg }}</p>
+</div>
+
+<div class="card" *ngIf="clienteSeleccionado">
+  <form [formGroup]="form" (ngSubmit)="guardar()">
+    <h3>{{ editandoCuentaId ? 'Editar cuenta' : 'Nueva cuenta' }}</h3>
+
+    <div class="grid">
+      <div>
+        <label>Número de cuenta</label>
+        <input type="text" placeholder="Se genera automáticamente" disabled />
+      </div>
+
+      <div>
+        <label>Tipo</label>
+        <select formControlName="tipoCuenta">
+          <option value="">Seleccione...</option>
+          <option value="Ahorros">Ahorros</option>
+          <option value="Corriente">Corriente</option>
+        </select>
+      </div>
+
+      <div>
+        <label>Saldo inicial</label>
+        <input type="number" formControlName="saldoInicial" />
+      </div>
+
+      <div>
+        <label>Estado</label>
+        <select formControlName="estado">
+          <option [ngValue]="true">Activa</option>
+          <option [ngValue]="false">Inactiva</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button type="submit">Guardar</button>
+      <button type="button" class="secondary" (click)="iniciarNueva()">Limpiar</button>
+    </div>
+
+    <p class="error" *ngIf="errorMsg">{{ errorMsg }}</p>
+  </form>
+</div>
+
+<div class="card" *ngIf="clienteSeleccionado">
+  <div class="row space">
+    <h3>Listado</h3>
+
+    <input
+      class="search"
+      type="text"
+      placeholder="Buscar por número o tipo"
+      [(ngModel)]="searchText"
+      (input)="aplicarFiltro()"
+    />
+  </div>
+
+  <p *ngIf="cargando">Cargando...</p>
+
+  <table *ngIf="!cargando" class="table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Número</th>
+        <th>Tipo</th>
+        <th>Saldo Inicial</th>
+        <th>Saldo Actual</th>
+        <th>Estado</th>
+        <th style="width: 160px;">Acciones</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let c of cuentasFiltradas">
+        <td>{{ c.cuentaId }}</td>
+        <td>{{ c.numeroCuenta }}</td>
+        <td>{{ c.tipoCuenta }}</td>
+        <td>{{ c.saldoInicial }}</td>
+        <td>{{ c.saldoActual }}</td>
+        <td>{{ c.estado ? 'Activa' : 'Inactiva' }}</td>
+        <td>
+          <button type="button" (click)="editar(c)">Editar</button>
+          <button type="button" class="danger" (click)="eliminar(c)">Eliminar</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

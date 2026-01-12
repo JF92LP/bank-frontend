@@ -1,0 +1,22 @@
+<div class="app">
+  <aside class="sidebar">
+    <h2 class="brand">Bank App</h2>
+
+    <nav class="menu">
+      <a routerLink="/clientes" routerLinkActive="active">Clientes</a>
+      <a routerLink="/cuentas" routerLinkActive="active">Cuentas</a>
+      <a routerLink="/movimientos" routerLinkActive="active">Movimientos</a>
+      <a routerLink="/reportes" routerLinkActive="active">Reportes</a>
+    </nav>
+  </aside>
+
+  <main class="content">
+    <header class="topbar">
+      <div class="title">Sistema Bancario</div>
+    </header>
+
+    <section class="page">
+      <router-outlet></router-outlet>
+    </section>
+  </main>
+</div>

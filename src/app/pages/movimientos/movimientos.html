@@ -1,0 +1,76 @@
+<h2>Movimientos</h2>
+
+<div class="card">
+  <div class="row">
+    <div style="flex: 1;">
+      <label>Número de cuenta</label>
+      <input type="text" [(ngModel)]="numeroCuenta" placeholder="Ej: 123456789" />
+    </div>
+
+    <button type="button" (click)="buscarMovimientos()">Buscar</button>
+  </div>
+
+  <hr />
+
+  <form [formGroup]="form" (ngSubmit)="procesarMovimiento()">
+    <h3>Registrar movimiento</h3>
+
+    <div class="grid">
+      <div>
+        <label>Tipo de movimiento</label>
+        <select formControlName="tipoMovimiento">
+          <option value="Credito">Crédito</option>
+          <option value="Debito">Débito</option>
+        </select>
+      </div>
+
+      <div>
+        <label>Valor</label>
+        <input type="number" formControlName="valor" />
+        <small class="val" *ngIf="form.get('valor')?.touched && form.get('valor')?.invalid">
+          Valor debe ser mayor a 0
+        </small>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button type="submit">Procesar</button>
+    </div>
+  </form>
+
+  <p class="ok" *ngIf="okMsg">{{ okMsg }}</p>
+  <p class="error" *ngIf="errorMsg">{{ errorMsg }}</p>
+</div>
+
+<div class="card">
+  <div class="row space">
+    <h3>Listado</h3>
+    <p class="muted">Movimientos por número de cuenta</p>
+  </div>
+
+  <p *ngIf="cargando">Cargando...</p>
+
+  <div *ngIf="!cargando && movimientos.length === 0" class="empty">
+    No hay movimientos para mostrar.
+  </div>
+
+  <table *ngIf="!cargando && movimientos.length > 0" class="table">
+    <thead>
+      <tr>
+        <th>Fecha</th>
+        <th>Tipo</th>
+        <th>Valor</th>
+        <th>Saldo</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let m of movimientos">
+        <td>{{ m.fecha }}</td>
+        <td>{{ m.tipoMovimiento }}</td>
+        <td>{{ m.valor }}</td>
+        <td>{{ m.saldo }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
