@@ -4,6 +4,9 @@ Frontend web de una aplicación bancaria desarrollado con **Angular**, encargado
 
 Este proyecto forma parte de una solución full stack orientada a buenas prácticas, arquitectura modular y facilidad de despliegue.
 
+Repositorio del frontend:  
+👉 **https://github.com/JF92LP/bank-frontend**
+
 ---
 
 ## 🚀 Tecnologías utilizadas
